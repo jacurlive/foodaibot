@@ -22,51 +22,15 @@ const pageVariants = {
   exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
 }
 
-function NoTelegramScreen({ onLogin }: { onLogin: (id: number) => void }) {
-  const [val, setVal] = useState('')
-  const [err, setErr] = useState(false)
-
-  const submit = () => {
-    const id = parseInt(val.trim())
-    if (!id || isNaN(id)) { setErr(true); return }
-    localStorage.setItem('tg_user_id', String(id))
-    onLogin(id)
-  }
-
+function NoTelegramScreen() {
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-6 px-8"
+    <div className="h-full flex flex-col items-center justify-center gap-4 px-8"
       style={{ background: 'var(--bg-base)' }}>
-      <div className="flex flex-col items-center gap-2">
-        <span style={{ fontSize: 56 }}>🤖</span>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>FoodAI</h1>
-        <p className="text-sm text-center" style={{ color: 'var(--text-secondary)' }}>
-          Введи Telegram ID для входа
-        </p>
-      </div>
-      <div className="w-full flex flex-col gap-3">
-        <input
-          autoFocus
-          type="number"
-          placeholder="Telegram ID (напр. 819233688)"
-          value={val}
-          onChange={e => { setVal(e.target.value); setErr(false) }}
-          onKeyDown={e => e.key === 'Enter' && submit()}
-          className="w-full px-4 py-3 rounded-2xl text-center text-lg outline-none"
-          style={{
-            background: 'var(--bg-card)',
-            border: `1.5px solid ${err ? 'var(--red)' : 'var(--border)'}`,
-            color: 'var(--text-primary)',
-          }}
-        />
-        {err && <p className="text-xs text-center" style={{ color: 'var(--red)' }}>Введи корректный ID</p>}
-        <button
-          onClick={submit}
-          className="w-full py-3 rounded-2xl font-semibold text-base"
-          style={{ background: 'var(--accent)', color: '#000' }}
-        >
-          Войти
-        </button>
-      </div>
+      <span style={{ fontSize: 64 }}>🤖</span>
+      <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>FoodAI</h1>
+      <p className="text-sm text-center" style={{ color: 'var(--text-secondary)' }}>
+        Откройте приложение через Telegram
+      </p>
     </div>
   )
 }
@@ -131,7 +95,7 @@ export default function App() {
     )
   }
 
-  if (noTelegram) return <NoTelegramScreen onLogin={() => window.location.reload()} />
+  if (noTelegram) return <NoTelegramScreen />
   if (error) return <ErrorScreen message={error} />
   if (!user) return <ErrorScreen message="Ошибка загрузки" />
 
