@@ -47,7 +47,8 @@ function MacroChip({
 export function Analyze({ onNavigate }: AnalyzeProps) {
   const { t } = useTranslation()
   const { user } = useStore()
-  const fileRef = useRef<HTMLInputElement>(null)
+  const cameraRef = useRef<HTMLInputElement>(null)
+  const galleryRef = useRef<HTMLInputElement>(null)
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [file, setFile] = useState<File | null>(null)
@@ -57,6 +58,7 @@ export function Analyze({ onNavigate }: AnalyzeProps) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showSourcePicker, setShowSourcePicker] = useState(false)
 
   const lang = user?.language || 'ru'
 
@@ -150,10 +152,17 @@ export function Analyze({ onNavigate }: AnalyzeProps) {
         </div>
 
         <input
-          ref={fileRef}
+          ref={cameraRef}
           type="file"
           accept="image/*"
           capture="environment"
+          onChange={handleInputChange}
+          className="hidden"
+        />
+        <input
+          ref={galleryRef}
+          type="file"
+          accept="image/*"
           onChange={handleInputChange}
           className="hidden"
         />
@@ -170,7 +179,7 @@ export function Analyze({ onNavigate }: AnalyzeProps) {
             >
               <motion.button
                 whileTap={{ scale: 0.97 }}
-                onClick={() => fileRef.current?.click()}
+                onClick={() => setShowSourcePicker(true)}
                 className="w-full rounded-3xl p-8 flex flex-col items-center gap-4"
                 style={{
                   border: '2px dashed var(--border)',
@@ -470,6 +479,57 @@ export function Analyze({ onNavigate }: AnalyzeProps) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Source picker bottom sheet */}
+      <AnimatePresence>
+        {showSourcePicker && (
+          <>
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSourcePicker(false)}
+              className="fixed inset-0 z-40"
+              style={{ background: 'rgba(0,0,0,0.5)' }}
+            />
+            <motion.div
+              key="sheet"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl p-5 flex flex-col gap-3"
+              style={{ background: 'var(--bg-card)', maxWidth: 480, margin: '0 auto' }}
+            >
+              <div className="w-10 h-1 rounded-full mx-auto mb-1" style={{ background: 'var(--border)' }} />
+              <button
+                onClick={() => { setShowSourcePicker(false); setTimeout(() => cameraRef.current?.click(), 50) }}
+                className="w-full py-4 rounded-2xl font-semibold text-base flex items-center justify-center gap-3"
+                style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+              >
+                <Camera size={20} style={{ color: 'var(--cyan)' }} />
+                {t('analyze.source_camera')}
+              </button>
+              <button
+                onClick={() => { setShowSourcePicker(false); setTimeout(() => galleryRef.current?.click(), 50) }}
+                className="w-full py-4 rounded-2xl font-semibold text-base flex items-center justify-center gap-3"
+                style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+              >
+                <Upload size={20} style={{ color: 'var(--accent)' }} />
+                {t('analyze.source_gallery')}
+              </button>
+              <button
+                onClick={() => setShowSourcePicker(false)}
+                className="w-full py-3 rounded-2xl text-sm font-medium"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                {t('analyze.cancel')}
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }

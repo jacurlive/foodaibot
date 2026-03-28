@@ -63,7 +63,10 @@
     "tap_photo": "Tap to photograph",
     "or_gallery": "or choose from gallery",
     "recalculate_hint": "Change grams to recalculate",
-    "error": "Analysis failed. Please try another photo."
+    "error": "Analysis failed. Please try another photo.",
+    "source_camera": "Camera",
+    "source_gallery": "Gallery",
+    "cancel": "Cancel"
   },
   "stats": {
     "title": "Statistics",

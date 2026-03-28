@@ -10,8 +10,8 @@ interface OnboardingProps {
   onComplete: (user: User) => void
 }
 
-type Step = 'language' | 'name' | 'age' | 'gender' | 'units' | 'height' | 'weight' | 'goal'
-const STEPS: Step[] = ['language', 'name', 'age', 'gender', 'units', 'height', 'weight', 'goal']
+type Step = 'age' | 'gender' | 'units' | 'height' | 'weight' | 'goal'
+const STEPS: Step[] = ['age', 'gender', 'units', 'height', 'weight', 'goal']
 
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0 }),
@@ -20,7 +20,7 @@ const slideVariants = {
 }
 
 export function Onboarding({ user, onComplete }: OnboardingProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { setUser } = useStore()
 
   const [stepIdx, setStepIdx] = useState(0)
@@ -28,9 +28,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Form state
-  const [lang, setLang] = useState(user.language || 'ru')
-  const [name, setName] = useState(user.name || '')
   const [age, setAge] = useState(user.age ? String(user.age) : '')
   const [gender, setGender] = useState(user.gender || '')
   const [units, setUnits] = useState(user.units || 'metric')
@@ -49,39 +46,24 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
 
   const validate = (): boolean => {
     setError(null)
-    if (step === 'name') {
-      if (!name.trim() || name.trim().length > 64) {
-        setError(t('onboarding.error_name')); return false
-      }
-    }
     if (step === 'age') {
       const n = parseInt(age)
-      if (isNaN(n) || n < 10 || n > 100) {
-        setError(t('onboarding.error_age')); return false
-      }
+      if (isNaN(n) || n < 10 || n > 100) { setError(t('onboarding.error_age')); return false }
     }
     if (step === 'height') {
       const n = parseFloat(height)
       if (units === 'metric') {
-        if (isNaN(n) || n < 100 || n > 250) {
-          setError(t('onboarding.error_height_metric')); return false
-        }
+        if (isNaN(n) || n < 100 || n > 250) { setError(t('onboarding.error_height_metric')); return false }
       } else {
-        if (isNaN(n) || n < 4 || n > 8) {
-          setError(t('onboarding.error_height_imperial')); return false
-        }
+        if (isNaN(n) || n < 4 || n > 8) { setError(t('onboarding.error_height_imperial')); return false }
       }
     }
     if (step === 'weight') {
       const n = parseFloat(weight)
       if (units === 'metric') {
-        if (isNaN(n) || n < 30 || n > 300) {
-          setError(t('onboarding.error_weight_metric')); return false
-        }
+        if (isNaN(n) || n < 30 || n > 300) { setError(t('onboarding.error_weight_metric')); return false }
       } else {
-        if (isNaN(n) || n < 66 || n > 660) {
-          setError(t('onboarding.error_weight_imperial')); return false
-        }
+        if (isNaN(n) || n < 66 || n > 660) { setError(t('onboarding.error_weight_imperial')); return false }
       }
     }
     return true
@@ -89,13 +71,7 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
 
   const handleNext = () => {
     if (!validate()) return
-    if (step === 'language') {
-      i18n.changeLanguage(lang)
-      localStorage.setItem('foodai_lang', lang)
-    }
-    if (stepIdx < total - 1) {
-      go(1)
-    }
+    go(1)
   }
 
   const handleFinish = async () => {
@@ -103,7 +79,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
     setLoading(true)
     setError(null)
     try {
-      // Convert height/weight if imperial
       let heightCm = parseFloat(height)
       let weightKg = parseFloat(weight)
       if (units === 'imperial') {
@@ -114,14 +89,14 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
       }
 
       const updated = await completeOnboarding({
-        name: name.trim(),
+        name: user.first_name || user.name || '',
         age: parseInt(age),
         gender,
         height: heightCm,
         weight: weightKg,
         goal,
         units,
-        language: lang,
+        language: user.language,
       })
       setUser(updated)
       onComplete(updated)
@@ -134,44 +109,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
 
   const renderStep = () => {
     switch (step) {
-      case 'language':
-        return (
-          <div className="flex flex-col gap-3">
-            {(['ru', 'en', 'uz'] as const).map(l => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className="w-full py-4 rounded-2xl text-base font-medium transition-all"
-                style={{
-                  background: lang === l ? 'var(--accent)' : 'var(--bg-card)',
-                  color: lang === l ? '#000' : 'var(--text-primary)',
-                  border: `2px solid ${lang === l ? 'var(--accent)' : 'var(--border)'}`,
-                }}
-              >
-                {t(`onboarding.lang_${l}`)}
-              </button>
-            ))}
-          </div>
-        )
-
-      case 'name':
-        return (
-          <input
-            autoFocus
-            type="text"
-            value={name}
-            onChange={e => { setName(e.target.value); setError(null) }}
-            onKeyDown={e => e.key === 'Enter' && handleNext()}
-            placeholder={t('onboarding.name_placeholder')}
-            className="w-full px-4 py-4 rounded-2xl text-base outline-none"
-            style={{
-              background: 'var(--bg-card)',
-              border: `2px solid ${error ? 'var(--red)' : 'var(--border)'}`,
-              color: 'var(--text-primary)',
-            }}
-          />
-        )
-
       case 'age':
         return (
           <input
@@ -189,7 +126,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             }}
           />
         )
-
       case 'gender':
         return (
           <div className="flex gap-3">
@@ -210,7 +146,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             ))}
           </div>
         )
-
       case 'units':
         return (
           <div className="flex flex-col gap-3">
@@ -230,7 +165,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             ))}
           </div>
         )
-
       case 'height':
         return (
           <input
@@ -248,7 +182,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             }}
           />
         )
-
       case 'weight':
         return (
           <input
@@ -266,7 +199,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             }}
           />
         )
-
       case 'goal':
         return (
           <div className="flex flex-col gap-3">
@@ -290,16 +222,12 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
   }
 
   const canProceed = () => {
-    switch (step) {
-      case 'gender': return !!gender
-      case 'goal': return !!goal
-      default: return true
-    }
+    if (step === 'gender') return !!gender
+    if (step === 'goal') return !!goal
+    return true
   }
 
   const stepTitle: Record<Step, string> = {
-    language: t('onboarding.step_language'),
-    name: t('onboarding.step_name'),
     age: t('onboarding.step_age'),
     gender: t('onboarding.step_gender'),
     units: t('onboarding.step_units'),
@@ -312,7 +240,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
 
   return (
     <div className="h-full flex flex-col" style={{ background: 'var(--bg-base)' }}>
-      {/* Header */}
       <div className="px-5 pt-6 pb-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
@@ -322,7 +249,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             {stepIdx + 1} / {total}
           </span>
         </div>
-        {/* Progress bar */}
         <div className="w-full h-1.5 rounded-full" style={{ background: 'var(--bg-card)' }}>
           <motion.div
             className="h-full rounded-full"
@@ -333,7 +259,6 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 px-5 overflow-hidden flex flex-col justify-center">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
@@ -357,15 +282,12 @@ export function Onboarding({ user, onComplete }: OnboardingProps) {
             {renderStep()}
 
             {error && (
-              <p className="text-sm text-center" style={{ color: 'var(--red)' }}>
-                {error}
-              </p>
+              <p className="text-sm text-center" style={{ color: 'var(--red)' }}>{error}</p>
             )}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Footer buttons */}
       <div className="px-5 pb-8 pt-4 flex gap-3">
         {stepIdx > 0 && (
           <button

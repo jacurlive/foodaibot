@@ -63,7 +63,10 @@
     "tap_photo": "Surga olish uchun bosing",
     "or_gallery": "yoki galereyadan tanlang",
     "recalculate_hint": "Qayta hisoblash uchun grammni o'zgartiring",
-    "error": "Tahlil muvaffaqiyatsiz. Boshqa surat sinab ko'ring."
+    "error": "Tahlil muvaffaqiyatsiz. Boshqa surat sinab ko'ring.",
+    "source_camera": "Kamera",
+    "source_gallery": "Galereya",
+    "cancel": "Bekor qilish"
   },
   "stats": {
     "title": "Statistika",
