@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="45%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#16231A"/>
+      <stop offset="100%" stop-color="#080E0A"/>
+    </radialGradient>
+
+    <linearGradient id="forkGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FCD34D"/>
+      <stop offset="55%"  stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+
+    <linearGradient id="circuitGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Warm ambient behind fork -->
+    <radialGradient id="warmAmbient" cx="50%" cy="45%" r="40%">
+      <stop offset="0%"   stop-color="#F59E0B" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cool ambient at bottom -->
+    <radialGradient id="coolAmbient" cx="50%" cy="70%" r="35%">
+      <stop offset="0%"   stop-color="#06B6D4" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="glow" color-interpolation-filters="sRGB" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <filter id="glowStrong" color-interpolation-filters="sRGB" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <filter id="textGlow" color-interpolation-filters="sRGB" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <clipPath id="roundedClip">
+      <rect width="512" height="512" rx="100"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+
+  <!-- Ambient glows -->
+  <rect width="512" height="512" rx="100" fill="url(#warmAmbient)" clip-path="url(#roundedClip)"/>
+  <rect width="512" height="512" rx="100" fill="url(#coolAmbient)" clip-path="url(#roundedClip)"/>
+
+  <!-- Plate rings -->
+  <circle cx="256" cy="215" r="168" fill="none" stroke="#1D3524" stroke-width="1.5"/>
+  <circle cx="256" cy="215" r="160" fill="none" stroke="#162B1E" stroke-width="1"/>
+
+  <!-- ── FORK ── -->
+  <!-- Left tine -->
+  <rect x="218" y="82" width="10" height="94" rx="5" fill="url(#forkGrad)" filter="url(#glow)"/>
+  <!-- Center tine -->
+  <rect x="251" y="82" width="10" height="94" rx="5" fill="url(#forkGrad)" filter="url(#glow)"/>
+  <!-- Right tine -->
+  <rect x="284" y="82" width="10" height="94" rx="5" fill="url(#forkGrad)" filter="url(#glow)"/>
+
+  <!-- Tine base connector -->
+  <rect x="218" y="170" width="76" height="10" rx="5" fill="#F59E0B" filter="url(#glow)"/>
+
+  <!-- Handle upper (warm) -->
+  <rect x="248" y="180" width="16" height="80" rx="8" fill="url(#forkGrad)"/>
+
+  <!-- ── CIRCUIT TRACES ── -->
+  <!-- Handle lower stub -->
+  <rect x="252" y="258" width="8" height="18" rx="4" fill="#0EA5E9" opacity="0.9"/>
+
+  <!-- Horizontal bus -->
+  <rect x="186" y="272" width="140" height="4" rx="2" fill="#0EA5E9" opacity="0.55"/>
+
+  <!-- Left branch down -->
+  <rect x="186" y="272" width="4" height="32" rx="2" fill="#0EA5E9" opacity="0.55"/>
+  <!-- Left leaf -->
+  <rect x="162" y="300" width="28" height="4" rx="2" fill="#06B6D4" opacity="0.45"/>
+
+  <!-- Right branch down -->
+  <rect x="322" y="272" width="4" height="32" rx="2" fill="#0EA5E9" opacity="0.55"/>
+  <!-- Right leaf -->
+  <rect x="322" y="300" width="28" height="4" rx="2" fill="#06B6D4" opacity="0.45"/>
+
+  <!-- Center branch down -->
+  <rect x="254" y="276" width="4" height="36" rx="2" fill="#0EA5E9" opacity="0.65"/>
+
+  <!-- Circuit junction dots -->
+  <circle cx="188" cy="274" r="5.5" fill="#34D399" filter="url(#glow)"/>
+  <circle cx="324" cy="274" r="5.5" fill="#34D399" filter="url(#glow)"/>
+  <circle cx="256" cy="312" r="5"   fill="#0EA5E9"  filter="url(#glow)"/>
+  <circle cx="162" cy="302" r="3.5" fill="#06B6D4"  opacity="0.7"/>
+  <circle cx="190" cy="304" r="3"   fill="#06B6D4"  opacity="0.6"/>
+  <circle cx="350" cy="302" r="3.5" fill="#06B6D4"  opacity="0.7"/>
+  <circle cx="322" cy="304" r="3"   fill="#06B6D4"  opacity="0.6"/>
+
+  <!-- ── SCAN LINE ── -->
+  <rect x="152" y="192" width="208" height="2.5" rx="1.25" fill="#06B6D4" opacity="0.35"/>
+  <!-- Scan sweep glow -->
+  <rect x="152" y="186" width="208" height="14" rx="3"
+        fill="#06B6D4" opacity="0.05"/>
+
+  <!-- ── FLOATING DATA NODES (AI feel) ── -->
+  <!-- Left cluster -->
+  <circle cx="166" cy="118" r="3"   fill="#F59E0B" opacity="0.55"/>
+  <circle cx="179" cy="148" r="2"   fill="#F59E0B" opacity="0.35"/>
+  <circle cx="158" cy="165" r="2.5" fill="#0EA5E9" opacity="0.45"/>
+  <!-- Lines -->
+  <line x1="166" y1="118" x2="218" y2="105" stroke="#F59E0B" stroke-width="1" opacity="0.18"/>
+  <line x1="158" y1="165" x2="218" y2="175" stroke="#0EA5E9" stroke-width="1" opacity="0.18"/>
+
+  <!-- Right cluster -->
+  <circle cx="346" cy="118" r="3"   fill="#F59E0B" opacity="0.55"/>
+  <circle cx="333" cy="148" r="2"   fill="#F59E0B" opacity="0.35"/>
+  <circle cx="354" cy="165" r="2.5" fill="#0EA5E9" opacity="0.45"/>
+  <!-- Lines -->
+  <line x1="346" y1="118" x2="294" y2="105" stroke="#F59E0B" stroke-width="1" opacity="0.18"/>
+  <line x1="354" y1="165" x2="294" y2="175" stroke="#0EA5E9" stroke-width="1" opacity="0.18"/>
+
+  <!-- ── WORDMARK ── -->
+  <!-- "FOOD" -->
+  <text
+    x="256" y="398"
+    text-anchor="middle"
+    font-family="'Trebuchet MS', 'Century Gothic', 'Futura', sans-serif"
+    font-size="62"
+    font-weight="700"
+    fill="#EDE8DC"
+    letter-spacing="10">FOOD</text>
+
+  <!-- "AI" amber with glow -->
+  <text
+    x="256" y="456"
+    text-anchor="middle"
+    font-family="'Trebuchet MS', 'Century Gothic', 'Futura', sans-serif"
+    font-size="56"
+    font-weight="900"
+    fill="#F59E0B"
+    letter-spacing="20"
+    filter="url(#textGlow)">AI</text>
+
+  <!-- Thin divider between FOOD and AI -->
+  <line x1="196" y1="408" x2="316" y2="408" stroke="#2A3D30" stroke-width="1"/>
+
+</svg>
